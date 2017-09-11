@@ -53,11 +53,10 @@ passport.use(
       const exisitingUser = await User.findOne({ googleID: profile.id });
 
       if (exisitingUser) {
-        done(null, exisitingUser);
-      } else {
-        const user = await new User({ googleID: profile.id }).save();
-        done(null, user);
+        return done(null, exisitingUser);
       }
+      const user = await new User({ googleID: profile.id }).save();
+      done(null, user);
     }
   )
 );
