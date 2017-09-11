@@ -40,3 +40,24 @@ passport.use(
     }
   )
 );
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: keys.googleClientID,
+      clientSecret: keys.googleClientSecret,
+      callbackURL: '/auth/google/callback',
+      proxy: true
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const exisitingUser = await User.findOne({ googleID: profile.id });
+
+      if (exisitingUser) {
+        done(null, exisitingUser);
+      } else {
+        const user = await new User({ googleID: profile.id }).save();
+        done(null, user);
+      }
+    }
+  )
+);
